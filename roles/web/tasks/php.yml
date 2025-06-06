@@ -1,0 +1,11 @@
+- name: Install PHP and extensions
+  apt:
+    name:
+      - php
+      - php-mysql
+      - libapache2-mod-php
+      - php-intl
+      - php-xml
+      - php-mbstring
+      - php-json
+    state: present

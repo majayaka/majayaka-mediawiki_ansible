@@ -1,0 +1,10 @@
+- name: Include Apache setup
+  include_tasks: apache.yml
+
+- name: Include PHP setup
+  include_tasks: php.yml
+
+- name: Include MediaWiki setup
+  include_tasks: mediawiki.yml
+
+
