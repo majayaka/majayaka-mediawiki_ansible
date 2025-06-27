@@ -1,0 +1,7 @@
+Alias /{{ site_name }} "{{ mediawiki_directory }}"
+
+<Directory "{{ mediawiki_directory }}">
+    Options FollowSymLinks
+    AllowOverride All
+    Require all granted
+</Directory>

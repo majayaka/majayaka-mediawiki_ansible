@@ -1,4 +1,11 @@
 ---
+- name: "Update apt cache"
+  apt:
+    update_cache: yes
+    cache_valid_time: 3600
+
+
+
 #1. Cette tâche permet d’installer Apache (httpd) à l’aide du module apt
 - name: "apache installation"
   apt:
@@ -14,5 +21,5 @@
 
 #3. Cette tâche fait appel à un autre fichier de configuration pour installer PHP. Elle est exécutée uniquement si la variable php_install est à vraie (par défaut, elle est à faux)
 - name: "install php packages"
-  include: "php-install.yml"
-  when: php_install|default(False)|bool
+  include_tasks: install_php.yml 
+  when: php_install

@@ -1,0 +1,21 @@
+mediawiki_name: "MyWiki"
+mediawiki_directory: "/var/www/html/mywiki"
+
+mediawiki_db_name: "mywiki_db"
+mediawiki_db_user: "mediawikiuser"
+mediawiki_db_host: "172.31.28.104"
+
+mediawiki_db_password: !vault |
+  $ANSIBLE_VAULT;1.1;AES256
+  35646632633962653430653532653939313731373034326339383262396435323166623332303239
+  3635643066346539323261633934663930376163316539660a643037643539613933623836643430
+  37303431313034316337353563353237326531383031376139363962346265386137366537633830
+  3261343333663732330a346464303331343230626433333635616266353665376464613766653662
+  3033
+
+mediawiki_archive_url: "https://releases.wikimedia.org/mediawiki/1.40/mediawiki-core-1.40.4.tar.gz"
+
+site_name: "MyWiki"
+mediawiki_admin_password: "YourStrongAdminPassword"
+mediawikititle: "My Awesome Wiki Title"
+mediawiki_admin_user: "Admin"

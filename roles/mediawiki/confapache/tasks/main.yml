@@ -1,0 +1,76 @@
+---
+- name: Ensure ACL package is installed
+  ansible.builtin.apt:
+    name: acl
+    state: present
+    update_cache: yes
+  become: yes
+
+- name: "Add user-ansible to www-data group"
+  command: usermod -a -G www-data user-ansible
+
+- name: "mediawiki directory"
+  file:
+    path: "{{ mediawiki_directory }}"
+    state: directory
+    owner: www-data
+    group: www-data
+
+- name: "extract and rename mediawiki archive"
+  unarchive:
+    src: "{{ mediawiki_archive_url }}"
+    dest: "{{ mediawiki_directory }}"
+    remote_src: yes
+    owner: www-data
+    group: www-data
+    extra_opts: [ "--transform=s/mediawiki-[0-9\\.]*\\///" ]
+
+- name: "add g+w in mediawiki directory"
+  command: chmod -R g+w {{ mediawiki_directory }}
+
+- name: "mediawiki configuration"
+  become: yes
+  args:
+    creates: "{{ mediawiki_directory }}/LocalSettings.php"
+    chdir: "{{ mediawiki_directory }}/maintenance"
+  command: >
+    php install.php
+    --scriptpath="/{{ site_name }}"
+    --dbname=mediawiki
+    --lang=fr
+    --dbuser="{{ mediawiki_db_user }}"
+    --dbpass="{{ mediawiki_db_password }}"
+    --dbserver="{{ mediawiki_db_host }}"
+    --pass="{{ mediawiki_admin_password }}"
+    --server=http://http1
+    "{{ mediawikititle }}" "{{ mediawiki_admin_user }}"
+  run_once: yes
+  delegate_to: "{{ item }}"
+  with_items: "{{ groups.apache }}"
+
+- name: "mediawiki db update"
+  become: yes
+  become_user: "user-ansible"
+  command: php update.php --quick
+  args:
+    chdir: "{{ mediawiki_directory }}/maintenance"
+  run_once: yes
+  register: resultat
+  changed_when: "'...done.' in resultat.stdout"
+
+- name: "Configure Apache alias for MediaWiki"
+  ansible.builtin.template:
+    src: mediawiki.conf.j2
+    dest: /etc/apache2/conf-available/mediawiki.conf
+    owner: root
+    group: root
+    mode: '0644'
+  become: yes
+  notify: Reload Apache
+
+- name: "Enable MediaWiki Apache configuration"
+  ansible.builtin.command: a2enconf mediawiki.conf
+  args:
+    creates: /etc/apache2/conf-enabled/mediawiki.conf
+  become: yes
+  notify: Reload Apache

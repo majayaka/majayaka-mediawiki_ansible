@@ -1,11 +1,12 @@
 - name: Setup MediaWiki Web Server
   hosts: web
   vars:
-    db_server_ip: "34.202.166.214"
+    db_server_ip: "13.217.231.180"
     db_user: "mediawikiuser"
     db_password: "your_secure_password"
     web_server_name: "http1"
     site_name: "MyWiki"
+    php_install: true
   roles:
     - web
 

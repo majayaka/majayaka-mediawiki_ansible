@@ -1,0 +1,4 @@
+# roles/mediawiki/confapache/meta/main.yml
+
+dependencies:
+  - role: mediawiki/commun
